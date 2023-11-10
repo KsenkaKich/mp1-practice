@@ -10,12 +10,12 @@ int main()
         scanf("%d", &n);
     } while ((n < 2) || (n > 5));
     srand((unsigned int)time(0));
-    for (i = 0; i < n; i++)
+    num[0] = 1 + rand() % 9;
+    for (i = 1; i < n; i++)
     {
         while (1)
         {
             int digit = rand() % 10;
-
             int one = 1;
             for (j = 0; j < n; j++)
                 if (num[j] == digit) one = 0;
