@@ -1,55 +1,49 @@
 #include "triangle.h"
 #include <stdio.h>
 #include <math.h>
-void allocate(coord* A,int x,int y) 
-{
-    A->x = x;
-    A->y = y;
-}
 
-float distance(coord* A, coord* B) {
-    return sqrt(pow(B->x - A->x,2) + pow(B->y - A->y, 2)); 
+double distance(coord* A, coord* B) {
+    return sqrt((B->x - A->x) * (B->x - A->x) + (B->y - A->y) * (B->y - A->y));
 }
 
 double area(coord* A, coord* B, coord* C)
 {
-    float a = distance(A, B);
-    float b = distance(B, C);
-    float c = distance(A, C);
-    float s = (a + b + c) / 2;
+    double a = distance(A, B);
+    double b = distance(B, C);
+    double c = distance(A, C);
+    double s = (a + b + c) / 2;
     return sqrt(s * (s - a) * (s - b) * (s - c));
 }
 
 double perimeter(coord* A, coord* B, coord* C)
 {
-    float a = distance(A, B);
-    float b = distance(B, C);
-    float c = distance(A, C);
+    double a = distance(A, B);
+    double b = distance(B, C);
+    double c = distance(A, C);
     return a + b + c;
 }
 
-char high(coord* A, coord* B, coord* C)
+void high(coord* A, coord* B, coord* C, double *h1, double *h2, double *h3)
 {
     double ar = area(A, B, C);
-    printf("H1 = %f\n ", (2 * ar) / distance(A, B));
-    printf("H2 = %f\n", (2 * ar) / distance(B, C));
-    printf("H3 = %f\n", (2 * ar) / distance(A, C));
+    *h1 = 2.0 * ar / distance(A, B);
+    *h2 = 2.0 * ar / distance(B, C);
+    *h3 = 2.0 * ar / distance(A, C);
+    return h1, h2, h3;
 }
 
-char type(coord* A, coord* B, coord* C)
+TriangleType type(coord* A, coord* B, coord* C)
 {
-    float a = distance(A, B);
-    float b = distance(B, C);
-    float c = distance(A, C);
+    double a = distance(A, B);
+    double b = distance(B, C);
+    double c = distance(A, C);
     if (a == b && b == c) {
-        printf("Equilateral Triangle\n");
+        return isosceles;
     }
-    else if (a == b || b == c || a == c) {
-        printf("Isosceles Triangle\n");
+    if (a == b || b == c || a == c) {
+        return equilateral;
     }
-    else {
-        printf("Scalene Triangle\n");
-    }
+    return general;
 }
 
 void read(const char* filename, coord* A, coord* B, coord* C)
@@ -59,35 +53,40 @@ void read(const char* filename, coord* A, coord* B, coord* C)
     if (f == NULL)
     {
         printf("FILE NOT FOUND");
-        abort();
+        exit(1);
     }
-    if (fscanf(f, "%d %d", &A->x, &A->y) != 2) {
+    if (fscanf(f, "%lf %lf", &A->x, &A->y) != 2) {
         printf("Error reading point A\n");
         return;
     }
 
-    if (fscanf(f, "%d %d", &B->x, &B->y) != 2) {
+    if (fscanf(f, "%lf %lf", &B->x, &B->y) != 2) {
         printf("Error reading point B\n");
         return;
     }
 
-    if (fscanf(f, "%d %d", &C->x, &C->y) != 2) {
+    if (fscanf(f, "%lf %lf", &C->x, &C->y) != 2) {
         printf("Error reading point C\n");
         return;
     }
-
     fclose(f);
 }
-
-void write(const char* filename, double* ar,double* per)
+//last point, everthing is right
+void write(const char* filename, double* ar, double* per, double* h1, double* h2, double* h3, TriangleType* t)
 {
     int i = 0;
     FILE* f = fopen(filename, "w+");
     if (f == NULL)
     {
         printf("File not found");
-        abort();
+        return;
     }
-    fprintf(f, "area: %.3lf", *ar);
-    fprintf(f, "perimeter: %.3lf", *per); //without high and type, I don't know what doing with them       
+    fprintf(f, "area: %.3lf\n", *ar);
+    fprintf(f, "perimeter: %.3lf\n", *per); 
+    fprintf(f, "highs: %.3lf %.3lf %.3lf\n", *h1,*h2,*h3);
+    fprintf(f, "Triangle Type: ");
+    if (*t == 0) { fprintf(f, "isosceles"); }
+    if (*t == 1) { fprintf(f, "equilateral"); }
+    if (*t == 2) { fprintf(f, "general"); }
+    fclose(f);
 }
