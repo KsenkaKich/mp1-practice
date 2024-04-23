@@ -2,21 +2,24 @@
 #include <stdio.h>
 #include <math.h>
 
-int main() 
+int main(int argc, char** argv)
 {
-    coord A, B, C;
-    const char* filename = "coord.txt";
+    /*if (argc != 3) {
+        printf("Exactly one argument expected, got %d\n ", argc); //почему у меня при запуске это выскакивает, я не вижу ошибок =(
+        return 1;
+    } */   
+    Triangle T;
     double h1, h2, h3;
     TriangleType triangle_type;
+    double ar, per;
 
-    read(filename, &A, &B, &C);
-    
-    double ar  = area(&A, &B, &C);
+    T = read(argv[1]);
 
-    double per = perimeter(&A, &B, &C);
+    ar  = area(&T);
+    per = perimeter(&T);
+    high(&T, &h1, &h2, &h3);
+    triangle_type = type(&T);
 
-    high(&A, &B, &C, &h1, &h2, &h3);
-    triangle_type = type(&A, &B, &C);
-    write("result.txt", &ar, &per,&h1,&h2,&h3,&triangle_type);
+    write(argv[2], ar, per, h1, h2, h3, triangle_type);
     return 0;
 }

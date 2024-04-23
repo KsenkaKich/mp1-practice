@@ -8,17 +8,25 @@ typedef struct {
     double y;
 }coord;
 
+typedef struct
+{
+    coord A;
+    coord B;
+    coord C;
+} Triangle;
+
 typedef enum {
     isosceles = 0,
     equilateral = 1,
     general = 2
-} TriangleType;
+} TriangleType;                                                          
 
-double distance(coord* A, coord* B);
-double area(coord* A, coord* B, coord* C);
-double perimeter(coord* A, coord* B, coord* C);
-void high(coord* A, coord* B, coord* C, double* h1, double* h2, double* h3);
-TriangleType type(coord* A, coord* B, coord* C);
-void read(const char* filename, coord* A, coord* B, coord* C);
-void write(const char* filename, double* ar, double* per, double* h1, double* h2, double* h3, TriangleType* t);
+double distance(coord* p1, coord* p2); 
+double area(Triangle* T); 
+double perimeter(Triangle* T); 
+void high(Triangle* T, double* h1, double* h2, double* h3);
+TriangleType type(Triangle* T); 
+Triangle read(char* filename);
+void write(const char* filename, double ar, double per,
+           double h1, double h2, double h3, TriangleType t);
 #endif// !TRIANGLE_H
