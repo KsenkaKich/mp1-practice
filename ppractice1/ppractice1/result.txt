@@ -1,0 +1,4 @@
+area: 6.000
+perimeter: 12.000
+highs: 3.000 2.400 4.000
+Triangle Type: general
